@@ -61,22 +61,34 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme inline {
+  --color-accent-strong: var(--accent-strong);
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --background: oklch(0.985 0.006 95);
+  --foreground: oklch(0.235 0.012 250);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.235 0.012 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --accent-strong: oklch(0.47 0.075 185);
+  --accent-soft: oklch(0.95 0.03 185);
+  --accent-faint: oklch(0.985 0.008 120);
+  --primary: oklch(0.47 0.075 185);
+  --primary-foreground: oklch(0.99 0.005 180);
+  --secondary: oklch(0.965 0.008 95);
+  --secondary-foreground: oklch(0.235 0.012 250);
+  --muted: oklch(0.965 0.008 95);
+  --muted-foreground: oklch(0.5 0.015 250);
+  --accent: oklch(0.58 0.085 182);
+  --accent-foreground: oklch(0.99 0.005 180);
+  --border: oklch(0.92 0.008 95);
+
+
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(0.929 0.013 255.508);
@@ -140,5 +152,156 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+  }
+}
+
+/* ---- Our Commitment section ---- */
+@utility commitment-glow {
+  position: absolute;
+  inset-inline-start: -12%;
+  top: -10%;
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 40% 40%,
+    color-mix(in oklab, var(--accent) 16%, transparent),
+    transparent 68%
+  );
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+@utility commitment-rule {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 1px;
+  width: min(1240px, 88%);
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--accent) 28%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.commitment .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.commitment[data-shown="true"] .reveal {
+  opacity: 1;
+  transform: none;
+}
+.commitment .r1 { transition-delay: 0ms; }
+.commitment .r2 { transition-delay: 220ms; }
+.commitment .r3 { transition-delay: 460ms; }
+.commitment .r4 { transition-delay: 900ms; }
+.commitment .r5 { transition-delay: 1150ms; }
+
+.commitment .timeline {
+  position: relative;
+  list-style: none;
+}
+.commitment .timeline::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: color-mix(in oklab, var(--accent) 32%, transparent);
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 1400ms cubic-bezier(0.22, 1, 0.36, 1) 620ms;
+}
+.commitment[data-shown="true"] .timeline::before {
+  transform: scaleY(1);
+}
+
+.commitment .timeline-item .node {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 15px;
+  height: 15px;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  background: var(--background);
+  transition:
+    box-shadow 500ms ease,
+    background-color 500ms ease;
+}
+.commitment .timeline-item:hover .node,
+.commitment .timeline-item:focus-visible .node {
+  background: color-mix(in oklab, var(--accent) 60%, var(--background));
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.commitment .timeline-item:focus-visible {
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+.commitment .journey .draw-line {
+  stroke-dasharray: 340;
+  stroke-dashoffset: 340;
+  transition: stroke-dashoffset 2200ms cubic-bezier(0.22, 1, 0.36, 1) 620ms;
+}
+.commitment[data-shown="true"] .journey .draw-line {
+  stroke-dashoffset: 0;
+}
+
+.commitment .journey .milestone {
+  opacity: 0;
+  transition:
+    opacity 900ms ease,
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.commitment[data-shown="true"] .journey .milestone {
+  opacity: 1;
+}
+.commitment .journey .milestone.is-active {
+  transform: scale(1.18);
+}
+.commitment .journey .milestone:nth-of-type(1) { transition-delay: 1000ms; }
+.commitment .journey .milestone:nth-of-type(2) { transition-delay: 1250ms; }
+
+.commitment .journey .pulse-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rmc-pulse 7s ease-in-out infinite;
+}
+
+@keyframes rmc-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.045); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commitment .reveal,
+  .commitment .timeline::before,
+  .commitment .journey .draw-line,
+  .commitment .journey .milestone {
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+  .commitment .journey .pulse-ring {
+    animation: none;
   }
 }
